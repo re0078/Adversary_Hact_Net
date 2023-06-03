@@ -28,7 +28,7 @@ def set_graph_on_cuda(graph):
     cuda_graph = dgl.DGLGraph()
     cuda_graph.add_nodes(graph.number_of_nodes())
     cuda_graph.add_edges(graph.edges()[0], graph.edges()[1])
-    cuda_graph.to(torch.device(DEVICE))
+    cuda_graph = cuda_graph.to(torch.device(DEVICE))
     for key_graph, val_graph in graph.ndata.items():
         tmp = graph.ndata[key_graph].clone()
         cuda_graph.ndata[key_graph] = tmp.cuda()
