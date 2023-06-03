@@ -8,7 +8,7 @@ from torch.utils.data import Dataset
 from glob import glob 
 import dgl 
 
-from histocartography.utils import set_graph_on_cuda
+# from histocartography.utils import set_graph_on_cuda
 
 
 IS_CUDA = torch.cuda.is_available()
@@ -23,6 +23,17 @@ def h5_to_tensor(h5_path):
     h5_object = h5py.File(h5_path, 'r')
     out = torch.from_numpy(np.array(h5_object['assignment_matrix']))
     return out
+
+def set_graph_on_cuda(graph):
+    cuda_graph = dgl.DGLGraph().to(torch.device(DEVICE))
+    cuda_graph.add_nodes(graph.number_of_nodes())
+    cuda_graph.add_edges(graph.edges()[0], graph.edges()[1])
+    for key_graph, val_graph in graph.ndata.items():
+        tmp = graph.ndata[key_graph].clone()
+        cuda_graph.ndata[key_graph] = tmp.cuda()
+    for key_graph, val_graph in graph.edata.items():
+        cuda_graph.edata[key_graph] = graph.edata[key_graph].clone().cuda()
+    return cuda_graph
 
 
 class BRACSDataset(Dataset):
