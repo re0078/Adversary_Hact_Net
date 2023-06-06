@@ -42,7 +42,7 @@ class CustomCellGraphModel(CellGraphModel):
         if adversarial:
             graph_embeddings = projected_gradient_descent(self, graph_embeddings, labels, loss_fn, 
                                 num_steps=40, step_size=0.01,
-                                eps=0.3, eps_norm='inf',
+                                eps=5e-05, eps_norm='inf',
                                 step_norm='inf')
 
         # 2. Run readout function
