@@ -19,7 +19,8 @@ class CustomCellGraphModel(CellGraphModel):
                      Tuple[torch.tensor, torch.tensor]],
         adversarial: bool=False,
         labels: torch.Tensor=None,
-        loss_fn: torch.nn.Module=None
+        loss_fn: torch.nn.Module=None,
+        epsilon:float=1e-2
     ) -> torch.tensor:
         """
         Foward pass.
@@ -41,8 +42,8 @@ class CustomCellGraphModel(CellGraphModel):
 
         if adversarial:
             graph_embeddings = projected_gradient_descent(self, graph_embeddings, labels, loss_fn, 
-                                num_steps=40, step_size=0.01,
-                                eps=5e-05, eps_norm='inf',
+                                num_steps=40, step_size=0.1,
+                                eps=epsilon, eps_norm='inf',
                                 step_norm='inf')
 
         # 2. Run readout function

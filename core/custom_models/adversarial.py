@@ -1,3 +1,5 @@
+import torch
+
 def projected_gradient_descent(model, x, y, loss_fn, num_steps, step_size, step_norm, eps, eps_norm,
                                clamp=(0,1), y_target=None):
     """Performs the projected gradient descent attack on a batch of images."""

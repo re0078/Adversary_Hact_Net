@@ -67,7 +67,13 @@ def parse_arguments():
     parser.add_argument(
         '--in_ram',
         help='if the data should be stored in RAM.',
-        action='store_true',
+        action='store_true'
+    )
+    parser.add_argument(
+        '--device',
+        type=str,
+        default=None,
+        help='the cuda device to be used '
     )
     parser.add_argument(
         '-b',
@@ -94,6 +100,13 @@ def parse_arguments():
         help='path to where the output data are saved (currently only for the interpretability).',
         default='../../data/graphs',
         required=False
+    )
+    parser.add_argument(
+        '--epsilon',
+        type=float,
+        help='Epsilon value for adversarial attack',
+        required=False,
+        default=1e-2
     )
     parser.add_argument(
         '--logger',
@@ -129,6 +142,9 @@ def main(args):
         for key, val in flatten_config.items():
             mlflow.log_params({key: str(val)})
 
+    if args.device:
+        DEVICE=args.device
+
     # set path to save checkpoints 
     model_path = os.path.join(args.model_path, str(uuid.uuid4()))
     os.makedirs(model_path, exist_ok=True)
@@ -162,7 +178,8 @@ def main(args):
             gnn_params=config['gnn_params'],
             classification_params=config['classification_params'],
             node_dim=NODE_DIM,
-            num_classes=7
+            num_classes=7,
+            epsilon=args.epsilon
         ).to(DEVICE)
 
     elif 'bracs_tggnn' in args.config_fpath:
@@ -210,7 +227,7 @@ def main(args):
             # 1. forward pass
             labels = batch[-1]
             data = batch[:-1]
-            logits = model(*data)
+            logits = model(*data, adversarial=True)
 
             # 2. backward pass
             loss = loss_fn(logits, labels)
@@ -233,7 +250,7 @@ def main(args):
             labels = batch[-1]
             data = batch[:-1]
             with torch.no_grad():
-                logits = model(*data)
+                logits = model(*data, adversarial=False)
             all_val_logits.append(logits)
             all_val_labels.append(labels)
 
@@ -287,7 +304,7 @@ def main(args):
             labels = batch[-1]
             data = batch[:-1]
             with torch.no_grad():
-                logits = model(*data)
+                logits = model(*data, adversarial=False)
             all_test_logits.append(logits)
             all_test_labels.append(labels)
 
