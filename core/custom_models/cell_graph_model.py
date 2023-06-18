@@ -13,8 +13,8 @@ GNN_NODE_FEAT_IN = 'feat'
 
 
 class CustomCellGraphModel(CellGraphModel):
-    def __init__(self, epsilon:float=0.01, *args):
-        CellGraphModel.__init__(self, *args)
+    def __init__(self, epsilon:float=0.01, **kwargs):
+        CellGraphModel.__init__(self, **kwargs)
         self.epsilon = epsilon
 
     def forward(
