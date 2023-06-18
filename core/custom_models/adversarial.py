@@ -18,10 +18,10 @@ def projected_gradient_descent(model, x, y, loss_fn, num_steps, step_size, step_
             if step_norm == 'inf':
                 gradients = _x_adv.grad.sign() * step_size
             else:
+                print("shapes:", _x_adv.shape, _x_adv.grad.shape)
                 # Note .view() assumes batched image data as 4D tensor
-                gradients = _x_adv.grad * step_size / _x_adv.grad.view(_x_adv.shape[0], -1)\
-                    .norm(step_norm, dim=-1)\
-                    .view(-1, num_channels, 1, 1)
+                gradients = _x_adv.grad * step_size / _x_adv.grad.norm(step_norm, dim=-1, keepdim=True)
+
 
             if targeted:
                 # Targeted: Gradient descent with on the loss of the (incorrect) target label
