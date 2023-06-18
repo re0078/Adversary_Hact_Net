@@ -39,10 +39,12 @@ def projected_gradient_descent(model, x, y, loss_fn, num_steps, step_size, step_
         elif eps_norm == 2:
             # L2 norm projection
             delta = x_adv - x
-            delta_norms = delta.view(delta.shape[0], -1).norm(p=2, dim=1) + 1e-12
-            scaling_factors = torch.min(eps / delta_norms, torch.ones_like(delta_norms))
+            delta_norms = delta.norm(p=2, dim=1) + 1e-12
+            scaling_factors = torch.min(eps / delta_norms, torch.ones_like(delta_norms).to(delta.device))
+            scaling_factors = scaling_factors.view(-1, 1)
             delta *= scaling_factors
             x_adv = x + delta
+
         else:
             raise ValueError(f"Unsupported eps_norm: {eps_norm}")
 
