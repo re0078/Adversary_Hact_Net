@@ -13,14 +13,17 @@ GNN_NODE_FEAT_IN = 'feat'
 
 
 class CustomCellGraphModel(CellGraphModel):
+    def __init__(self, epsilon:float=0.01, *args):
+        CellGraphModel.__init__(self, *args)
+        self.epsilon = epsilon
+
     def forward(
         self,
         graph: Union[dgl.DGLGraph,
                      Tuple[torch.tensor, torch.tensor]],
         adversarial: bool=False,
         labels: torch.Tensor=None,
-        loss_fn: torch.nn.Module=None,
-        epsilon:float=1e-2
+        loss_fn: torch.nn.Module=None
     ) -> torch.tensor:
         """
         Foward pass.
@@ -43,7 +46,7 @@ class CustomCellGraphModel(CellGraphModel):
         if adversarial:
             graph_embeddings = projected_gradient_descent(self, graph_embeddings, labels, loss_fn, 
                                 num_steps=40, step_size=0.1,
-                                eps=epsilon, eps_norm='inf',
+                                eps=self.epsilon, eps_norm='inf',
                                 step_norm='inf')
 
         # 2. Run readout function
