@@ -25,11 +25,11 @@ def projected_gradient_descent(model, x, y, loss_fn, num_steps, step_size, step_
             if targeted:
                 # Targeted: Gradient descent with on the loss of the (incorrect) target label
                 # w.r.t. the image data
-                x_adv -= gradients
+                x_adv = x_adv - gradients
             else:
                 # Untargeted: Gradient ascent on the loss of the correct label w.r.t.
                 # the model parameters
-                x_adv += gradients
+                x_adv = x_adv + gradients
 
         # Project back into l_norm ball and correct range
         if eps_norm == 'inf':
