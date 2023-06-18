@@ -227,7 +227,7 @@ def main(args):
             # 1. forward pass
             labels = batch[-1]
             data = batch[:-1]
-            logits = model(*data, adversarial=True)
+            logits = model(*data, adversarial=True, loss_fn=loss_fn)
 
             # 2. backward pass
             loss = loss_fn(logits, labels)
