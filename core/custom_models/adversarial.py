@@ -1,7 +1,6 @@
 import torch
 
-def projected_gradient_descent(model, x, y, loss_fn, num_steps, step_size, step_norm, eps, eps_norm,
-                               clamp=(0,1), y_target=None):
+def projected_gradient_descent(model, x, y, loss_fn, num_steps, step_size, step_norm, eps, eps_norm, clamp=(0,1), y_target=None):
     """Performs the projected gradient descent attack on a batch of images."""
     x_adv = x.clone().detach().requires_grad_(True).to(x.device)
     targeted = y_target is not None
@@ -10,7 +9,7 @@ def projected_gradient_descent(model, x, y, loss_fn, num_steps, step_size, step_
     for i in range(num_steps):
         _x_adv = x_adv.clone().detach().requires_grad_(True)
 
-        prediction = model(_x_adv)
+        prediction = model.pred_layer(_x_adv)
         loss = loss_fn(prediction, y_target if targeted else y)
         loss.backward()
 
@@ -37,21 +36,16 @@ def projected_gradient_descent(model, x, y, loss_fn, num_steps, step_size, step_
         if eps_norm == 'inf':
             # Workaround as PyTorch doesn't have elementwise clip
             x_adv = torch.max(torch.min(x_adv, x + eps), x - eps)
-        else:
+        elif eps_norm == 2:
+            # L2 norm projection
             delta = x_adv - x
-
-            # Assume x and x_adv are batched tensors where the first dimension is
-            # a batch dimension
-            mask = delta.view(delta.shape[0], -1).norm(norm, dim=1) <= eps
-
-            scaling_factor = delta.view(delta.shape[0], -1).norm(norm, dim=1)
-            scaling_factor[mask] = eps
-
-            # .view() assumes batched images as a 4D Tensor
-            delta *= eps / scaling_factor.view(-1, 1, 1, 1)
-
+            delta_norms = delta.view(delta.shape[0], -1).norm(p=2, dim=1) + 1e-12
+            scaling_factors = torch.min(eps / delta_norms, torch.ones_like(delta_norms))
+            delta *= scaling_factors.view(-1, 1, 1, 1)
             x_adv = x + delta
-            
+        else:
+            raise ValueError(f"Unsupported eps_norm: {eps_norm}")
+
         x_adv = x_adv.clamp(*clamp)
 
     return x_adv.detach()
