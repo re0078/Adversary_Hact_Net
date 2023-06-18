@@ -129,6 +129,10 @@ def main(args):
     with open(args.config_fpath, 'r') as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
 
+    if args.device:
+        DEVICE=args.device
+
+
     # log parameters to logger
     if args.logger == 'mlflow':
         mlflow.log_params({
@@ -142,9 +146,7 @@ def main(args):
         for key, val in flatten_config.items():
             mlflow.log_params({key: str(val)})
 
-    if args.device:
-        DEVICE=args.device
-
+    
     # set path to save checkpoints 
     model_path = os.path.join(args.model_path, str(uuid.uuid4()))
     os.makedirs(model_path, exist_ok=True)

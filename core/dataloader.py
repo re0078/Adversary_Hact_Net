@@ -5,6 +5,7 @@ import torch.utils.data
 import numpy as np
 from dgl.data.utils import load_graphs
 from torch.utils.data import Dataset
+from train import DEVICE
 from glob import glob 
 import dgl 
 
@@ -12,7 +13,7 @@ import dgl
 
 
 IS_CUDA = torch.cuda.is_available()
-DEVICE = 'cuda:0' if IS_CUDA else 'cpu'
+# DEVICE = 'cuda:0' if IS_CUDA else 'cpu'
 COLLATE_FN = {
     'DGLGraph': lambda x: dgl.batch(x),
     'Tensor': lambda x: x,
@@ -196,6 +197,7 @@ def make_data_loader(
         batch_size,
         shuffle=True,
         num_workers=0,
+        device=DEVICE,
         **kwargs
     ):
     """
