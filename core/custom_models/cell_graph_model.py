@@ -47,7 +47,7 @@ class CustomCellGraphModel(CellGraphModel):
             graph_embeddings = projected_gradient_descent(self, graph_embeddings, labels, loss_fn, 
                                 num_steps=40, step_size=0.1,
                                 eps=self.epsilon, eps_norm=2,
-                                step_norm="l2")
+                                step_norm=2)
 
         # 2. Run readout function
         out = self.pred_layer(graph_embeddings)
