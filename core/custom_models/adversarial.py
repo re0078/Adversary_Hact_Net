@@ -2,7 +2,7 @@ import torch
 
 def projected_gradient_descent(model, x, y, loss_fn, num_steps, step_size, step_norm, eps, eps_norm, clamp=(0,1), y_target=None):
     """Performs the projected gradient descent attack on a batch of images."""
-    x_adv = x.clone().detach().requires_grad_(True).to(x.device)
+    x_adv = x.clone().requires_grad_(True).to(x.device)
     targeted = y_target is not None
     num_channels = x.shape[1]
 
@@ -18,7 +18,6 @@ def projected_gradient_descent(model, x, y, loss_fn, num_steps, step_size, step_
             if step_norm == 'inf':
                 gradients = _x_adv.grad.sign() * step_size
             else:
-                print("shapes:", _x_adv.shape, _x_adv.grad.shape)
                 # Note .view() assumes batched image data as 4D tensor
                 gradients = _x_adv.grad * step_size / _x_adv.grad.norm(step_norm, dim=-1, keepdim=True)
 
@@ -50,4 +49,4 @@ def projected_gradient_descent(model, x, y, loss_fn, num_steps, step_size, step_
 
         x_adv = x_adv.clamp(*clamp)
 
-    return x_adv.detach()
+    return x_adv
