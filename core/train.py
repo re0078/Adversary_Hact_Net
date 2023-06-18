@@ -157,6 +157,7 @@ def main(args):
         tg_path=os.path.join(args.tg_path, 'train') if args.tg_path is not None else None,
         assign_mat_path=os.path.join(args.assign_mat_path, 'train') if args.assign_mat_path is not None else None,
         batch_size=args.batch_size,
+        device=DEVICE,
         load_in_ram=args.in_ram,
     )
     val_dataloader = make_data_loader(
@@ -164,6 +165,7 @@ def main(args):
         tg_path=os.path.join(args.tg_path, 'val') if args.tg_path is not None else None,
         assign_mat_path=os.path.join(args.assign_mat_path, 'val') if args.assign_mat_path is not None else None,
         batch_size=args.batch_size,
+        device=DEVICE,
         load_in_ram=args.in_ram,
     )
     test_dataloader = make_data_loader(
@@ -171,6 +173,7 @@ def main(args):
         tg_path=os.path.join(args.tg_path, 'test') if args.tg_path is not None else None,
         assign_mat_path=os.path.join(args.assign_mat_path, 'test') if args.assign_mat_path is not None else None,
         batch_size=args.batch_size,
+        device=DEVICE,
         load_in_ram=args.in_ram,
     )
 

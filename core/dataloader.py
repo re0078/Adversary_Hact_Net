@@ -5,7 +5,6 @@ import torch.utils.data
 import numpy as np
 from dgl.data.utils import load_graphs
 from torch.utils.data import Dataset
-from train import DEVICE
 from glob import glob 
 import dgl 
 
@@ -13,7 +12,7 @@ import dgl
 
 
 IS_CUDA = torch.cuda.is_available()
-# DEVICE = 'cuda:0' if IS_CUDA else 'cpu'
+DEVICE = 'cuda:0' if IS_CUDA else 'cpu'
 COLLATE_FN = {
     'DGLGraph': lambda x: dgl.batch(x),
     'Tensor': lambda x: x,
@@ -203,6 +202,8 @@ def make_data_loader(
     """
     Create a BRACS data loader.
     """
+
+    DEVICE = device
 
     dataset = BRACSDataset(**kwargs)
     dataloader = torch.utils.data.DataLoader(
