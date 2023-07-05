@@ -5,7 +5,8 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-from histocartography.interpretability import BaseExplainer, GradCAM
+from histocartography.interpretability.base_explainer import BaseExplainer
+from histocartography.interpretability.grad_cam import GradCAM
 
 class BaseGraphGradCAMExplainer(BaseExplainer):
     def __init__(
