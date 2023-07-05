@@ -8,7 +8,7 @@ import yaml
 from tqdm import tqdm
 from dgl.data.utils import load_graphs
 import dgl
-from histocartography.interpretability import GraphLRPExplainer as GraphGradCAMExplainer
+from histocartography.interpretability import GraphGradCAMExplainer
 from custom_models.cell_graph_model import CustomCellGraphModel
 
 # cuda support
