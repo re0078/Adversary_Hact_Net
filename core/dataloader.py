@@ -199,6 +199,7 @@ def make_data_loader(
         device=DEVICE,
         **kwargs
     ):
+    global DEVICE
     """
     Create a BRACS data loader.
     """
