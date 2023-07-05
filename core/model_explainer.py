@@ -7,8 +7,8 @@ import json
 import yaml
 from tqdm import tqdm
 from dgl.data.utils import load_graphs
+import dgl
 from histocartography.interpretability import GraphLRPExplainer as GraphGradCAMExplainer
-from histocartography.utils.graph import set_graph_on_cuda
 from custom_models.cell_graph_model import CustomCellGraphModel
 
 # cuda support
@@ -51,6 +51,18 @@ def parse_arguments():
     )
 
     return parser.parse_args()
+
+def set_graph_on_cuda(graph):
+    cuda_graph = dgl.DGLGraph()
+    cuda_graph.add_nodes(graph.number_of_nodes())
+    cuda_graph.add_edges(graph.edges()[0], graph.edges()[1])
+    cuda_graph = cuda_graph.to(torch.device(DEVICE))
+    for key_graph, val_graph in graph.ndata.items():
+        tmp = graph.ndata[key_graph].clone()
+        cuda_graph.ndata[key_graph] = tmp.cuda()
+    for key_graph, val_graph in graph.edata.items():
+        cuda_graph.edata[key_graph] = graph.edata[key_graph].clone().cuda()
+    return cuda_graph
 
 
 def main(args, config):
