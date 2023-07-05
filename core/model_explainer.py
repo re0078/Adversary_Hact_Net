@@ -66,18 +66,15 @@ def set_graph_on_cuda(graph):
 
 
 def main(args, config):
-    # Define device
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
     # Load the model
     model = CustomCellGraphModel(
         gnn_params=config['gnn_params'],
         classification_params=config['classification_params'],
         node_dim=NODE_DIM,
         num_classes=7
-    ).to(device)
+    ).to(DEVICE)
 
-    model.load_state_dict(torch.load(args.model, map_location=device))
+    model.load_state_dict(torch.load(args.model, map_location=DEVICE))
     model.eval()
 
     # Define the explainer
