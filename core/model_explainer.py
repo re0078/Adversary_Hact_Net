@@ -9,7 +9,7 @@ from tqdm import tqdm
 from dgl.data.utils import load_graphs
 from histocartography.interpretability import GraphLRPExplainer as GraphGradCAMExplainer
 from histocartography.utils.graph import set_graph_on_cuda
-from cell_graph_model import CustomCellGraphModel
+from custom_models.cell_graph_model import CustomCellGraphModel
 
 # cuda support
 IS_CUDA = torch.cuda.is_available()
