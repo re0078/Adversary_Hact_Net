@@ -92,7 +92,7 @@ def main(args, config):
             'logits': logits
         })
 
-    with open(args.output, 'w') as json_file:
+    with open(os.path.join(args.output, "out.json"), 'w') as json_file:
         json.dump(output, json_file)
 
 if __name__ == '__main__':
@@ -103,5 +103,11 @@ if __name__ == '__main__':
 
     if args.device:
         DEVICE=args.device
+
+
+    model_dir = os.path.basename(os.path.dirname(args.model))
+
+    args.output = os.path.join(args.output, model_dir)
+    os.mkdir(args.output)
 
     main(args, config)
