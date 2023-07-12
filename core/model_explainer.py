@@ -75,7 +75,7 @@ def main(args, config):
     ).to(DEVICE)
 
     model.load_state_dict(torch.load(args.model, map_location=DEVICE))
-    # model.eval()
+    model.eval()
 
     # Define the explainer
     explainer = GraphGradCAMExplainer(model=model)
